@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>chatterbox</title>
+    <link rel="stylesheet" href="styles/styles.css">
+
+    <!-- dependencies -->
+    <script src="bower_components/jquery/jquery-min.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <!-- your scripts -->
+    <script src="env/config.js"></script>
+    <script src="scripts/app.js"></script>
+  </head>
+  <body onLoad="window.scroll(0, 35)">
+    <div id="main">
+      <h1>chatterbox<img src="images/transparent_spinner.gif" class='spinner'></h1>
+      <!-- Your HTML goes here! -->
+      Room: <select id='roomSelect' val='showAll'>
+        <option value='addRoom'>New room...</option>
+        <option value='showAll'>Show all messages</option>
+      </select>
+      <form>
+        <input id='messageText' type='text'></text>
+        <button id='send' type='button' onclick="app.createMessage()">Send</button>
+      </form>
+      <div id='chat'>
+        <div id='refresh'>Refreshing feed...</div>
+        <div id='feed'>
+          <div id='noMessages'>Loading messages</div>
+        </div>
+        <div id='loadMore'>Loading more messages...</div>
+      </div>
+      <button id='clear' type='button' onclick="app.init()">Clear</button>
+    </div>
+  </body>
+</html>

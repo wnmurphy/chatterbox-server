@@ -1,0 +1,22 @@
+{
+  "name": "client",
+  "homepage": "https://github.com/wnmurphy/2016-01-chatterbox-server",
+  "authors": [
+    "Neil Murphy <wnmurphy@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.0",
+    "underscore": "^1.8.3"
+  }
+}
