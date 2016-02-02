@@ -93,14 +93,20 @@ var filterByTime = function(array, query){
 };
 
 var binarySearch = function (array, target, start, end) {
+  console.log(array);
+  console.log('target: ' + target);
   start = start || 0;
-  end = end || array.length - 1;
+  if (end === undefined || end === 0){
+    end = array.length - 1;
+  }
   var index = start + Math.floor((end-start)/2);
 
   if (array[index].createdAt === target) {
     return index;
   }
+  console.log('start: ' + start + ', end: ' + end);
   if (end === start) {
+    console.log('escape!');
     return -1; 
   }
   if (target < array[index].createdAt) {
