@@ -19,7 +19,7 @@ exports.requestHandler = function(request, response) {
       if(!Array.isArray(data[pathName[2]])){
         data[pathName[2]] = [];
       }
-
+      
       var results = filterByTime(data[pathName[2]], query);
       
       response.end(JSON.stringify( {results: results } ));
@@ -66,7 +66,7 @@ exports.requestHandler = function(request, response) {
 var filterByTime = function(array, query){
   var filterObject;
   // If where is not empty, pull out '{"$gt":1454438415229}}',
-  if(query.where !== ''){  
+  if(query.where){  
     filterObject = JSON.parse(query.where).createdAt;
     var limit = Number.parseInt(query.limit);
     var direction = null;
@@ -93,7 +93,6 @@ var filterByTime = function(array, query){
 };
 
 var binarySearch = function (array, target, start, end) {
-  if(array.length < 1){return;}
   start = start || 0;
   end = end || array.length - 1;
   var index = start + Math.floor((end-start)/2);
@@ -118,9 +117,4 @@ var defaultCorsHeaders = {
   "access-control-max-age": 10 // Seconds.
 };
 
-var data = {
-  messages: [ { text: 'josh',
-    username: 'Josh',
-    roomname: 'showAll',
-    createdAt: 1454442295 } ]
-};
+var data = {};
