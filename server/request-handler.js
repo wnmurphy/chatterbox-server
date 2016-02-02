@@ -1,44 +1,51 @@
+var url = require('url');
+
 exports.requestHandler = function(request, response) {
-
   console.log("Serving request type " + request.method + " for url " + request.url);
+  
+  var pathName = url.parse(request.url).pathname.split('/');
+  
+  if(pathName[1] === 'classes'){
 
-  // handle GET
-  if(request.method === "GET"){
+    if(request.method === "GET"){
 
-    var statusCode = 200;
-
-    var headers = defaultCorsHeaders;
-
-    headers['Content-Type'] = "application/json";
-
-    response.writeHead(statusCode, headers);
-    
-    response.write('{"results": ' + JSON.stringify(data.messages) + '}');
-
-    response.end();
-
-  } else if(request.method === "POST"){
-//    if(request.url === "/classes/messages/"){
-      
-      var statusCode = 201;
-
+      var statusCode = 200;
       var headers = defaultCorsHeaders;
-
       headers['Content-Type'] = "application/json";
 
       response.writeHead(statusCode, headers);
       
-      request.on('data', function (stuff) {
-        console.log(stuff.toString());
-        data.messages.push(JSON.parse(stuff.toString()));
-        console.log(JSON.stringify(data.messages));
+      if(!Array.isArray(data[pathName[2]])){
+        data[pathName[2]] = [];
+      }
+                  
+      response.end(JSON.stringify( {results: data[pathName[2]] } ));
+
+    } else if(request.method === "POST"){
+        
+      statusCode = 201;
+      headers = defaultCorsHeaders;
+      headers['Content-Type'] = "application/json";
+
+      response.writeHead(statusCode, headers);
+      
+      request.on('data', function (newData) {
+        if(!Array.isArray(data[pathName[2]])){
+          data[pathName[2]] = [];
+        }
+        data[pathName[2]].push(JSON.parse(newData.toString()));
       });
-
-      // JSON.stringify(request.json)
-
+    
       response.end(); 
+    }
+    
+  } else {
+    
+    statusCode = 404;
+    response.writeHead(statusCode);
+    response.end(); 
+  
   }
-
 };
 
 var defaultCorsHeaders = {
@@ -48,6 +55,4 @@ var defaultCorsHeaders = {
   "access-control-max-age": 10 // Seconds.
 };
 
-var data = {
-  messages: []
-};
+var data = {};

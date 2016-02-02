@@ -2,7 +2,7 @@
 
 var app = {
   //------------------------PROPERTIES-----------------------//
-  _server: 'https://api.parse.com/1/classes/chatterbox',
+  _server: 'http://127.0.0.1:3000/classes/messages',
   _initialized: false,
   _refVariables: {},
   
