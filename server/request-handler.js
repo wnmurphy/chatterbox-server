@@ -1,4 +1,5 @@
 var url = require('url');
+var fs = require('fs');
 
 exports.requestHandler = function(request, response) {
   console.log("Serving request type " + request.method + " for url " + request.url);
@@ -6,7 +7,20 @@ exports.requestHandler = function(request, response) {
   var pathName = url.parse(request.url).pathname.split('/');
   var query = url.parse(request.url, true).query;
 
-  if(pathName[1] === 'classes'){
+  if(request.url === '/') {
+    fs.readFile('./client/index.html', function (err, html) {
+      if (err) {
+          throw err; 
+      }
+      var headers = defaultCorsHeaders;
+      headers['Content-Type'] = "text/html";  
+      response.writeHead(200, headers);
+      
+      response.write(html);  
+      
+      response.end();  
+    });
+  } else if (pathName[1] === 'classes'){
 
     if(request.method === "GET"){
 
@@ -20,7 +34,7 @@ exports.requestHandler = function(request, response) {
         data[pathName[2]] = [];
       }
       
-      var results = filterByTime(data[pathName[2]], query);
+      var results = filterByTime(data[pathName[2]], query).reverse();
       
       response.end(JSON.stringify( {results: results } ));
 
@@ -87,14 +101,12 @@ var filterByTime = function(array, query){
       return array.slice(timeIndex-limit, timeIndex);
     }
   } else {
-    return array.slice(array.length - Number.parseInt(query.limit) - 1);
+    return array.slice(array.length - Number.parseInt(query.limit));
   }
 
 };
 
 var binarySearch = function (array, target, start, end) {
-  console.log(array);
-  console.log('target: ' + target);
   start = start || 0;
   if (end === undefined || end === 0){
     end = array.length - 1;
@@ -104,9 +116,10 @@ var binarySearch = function (array, target, start, end) {
   if (array[index].createdAt === target) {
     return index;
   }
-  console.log('start: ' + start + ', end: ' + end);
   if (end === start) {
-    console.log('escape!');
+    return -1; 
+  }
+  if ((target > array[end].createdAt) || (target < array[start].createdAt)) {
     return -1; 
   }
   if (target < array[index].createdAt) {

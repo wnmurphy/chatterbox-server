@@ -136,7 +136,9 @@ var app = {
     var done = false;
 
     if (data.results.length > 0) {
-      //
+      if(app._nextQuery['load'] === ''){
+        app._nextQuery['load'] = JSON.stringify({"createdAt": {"$lt": data.results[data.results.length-1].createdAt}});
+      }
       // sets start point for refresh
       app._nextQuery['refresh'] = JSON.stringify({"createdAt": {"$gt": data.results[0].createdAt}});
       
