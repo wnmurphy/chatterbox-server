@@ -98,7 +98,9 @@ var filterByTime = function(array, query){
     if(direction === '$gt') {
       return array.slice(timeIndex+1, timeIndex + limit + 1);
     }else{
-      return array.slice(timeIndex-limit, timeIndex);
+      console.log(timeIndex - limit);
+      console.log('limit: ' + limit + typeof limit);
+      return array.slice((timeIndex - limit), timeIndex);
     }
   } else {
     return array.slice(array.length - Number.parseInt(query.limit));
@@ -116,14 +118,8 @@ var binarySearch = function (array, target, start, end) {
   if (array[index].createdAt === target) {
     return index;
   }
-  if (end === start) {
-    return -1; 
-  }
-  if ((target > array[end].createdAt) || (target < array[start].createdAt)) {
-    return -1; 
-  }
   if (target < array[index].createdAt) {
-    return binarySearch(array, target, start, index - 1);
+    return binarySearch(array, target, start, index);
   } else {
     return binarySearch(array, target, index + 1, end);
   }

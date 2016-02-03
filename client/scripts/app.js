@@ -88,7 +88,7 @@ var app = {
     // sends a GET request to url
     $.ajax({ url: app._server, 
             data: {
-                   'limit': 100, 
+                   'limit': 10, 
                    'where': app._nextQuery[loadOrRefresh], 
                    'order': '-createdAt'}, 
          success: processData
