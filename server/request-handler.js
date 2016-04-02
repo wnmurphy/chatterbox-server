@@ -1,51 +1,51 @@
 var url = require('url');
 var fs = require('fs');
 
-exports.requestHandler = function(request, response) {
+exports.requestHandler = function (request, response) {
   console.log("Serving request type " + request.method + " for url " + request.url);
-  
+
   var pathName = url.parse(request.url).pathname.split('/');
   var query = url.parse(request.url, true).query;
 
   if(request.url === '/') {
     fs.readFile('./client/index.html', function (err, html) {
       if (err) {
-          throw err; 
+          throw err;
       }
       var headers = defaultCorsHeaders;
-      headers['Content-Type'] = "text/html";  
+      headers['Content-Type'] = "text/html";
       response.writeHead(200, headers);
-      
-      response.write(html);  
-      
-      response.end();  
-    });
-  } else if (pathName[1] === 'classes'){
 
-    if(request.method === "GET"){
+      response.write(html);
+
+      response.end();
+    });
+  } else if (pathName[1] === 'classes') {
+
+    if (request.method === "GET") {
 
       var statusCode = 200;
       var headers = defaultCorsHeaders;
       headers['Content-Type'] = "application/json";
 
       response.writeHead(statusCode, headers);
-      
+
       if(!Array.isArray(data[pathName[2]])){
         data[pathName[2]] = [];
       }
-      
+
       var results = filterByTime(data[pathName[2]], query).reverse();
-      
+
       response.end(JSON.stringify( {results: results } ));
 
     } else if(request.method === "POST"){
-        
-      statusCode = 201;
+
+      var statusCode = 201;
       headers = defaultCorsHeaders;
       headers['Content-Type'] = "application/json";
 
       response.writeHead(statusCode, headers);
-      
+
       request.on('data', function (newData) {
         if(!Array.isArray(data[pathName[2]])){
           data[pathName[2]] = [];
@@ -55,51 +55,42 @@ exports.requestHandler = function(request, response) {
         data[pathName[2]].push(newMessage);
 
       });
-    
-      response.end(); 
 
-    } else if(request.method === "OPTIONS"){
-      
+      response.end();
+
+    } else if (request.method === "OPTIONS") {
       statusCode = 200;
       headers = defaultCorsHeaders;
       headers['Content-Type'] = "application/json";
       response.writeHead(statusCode, headers);
       response.end();
-      
     }
-    
   } else {
-    
     statusCode = 404;
     response.writeHead(statusCode);
-    response.end(); 
-  
+    response.end();
   }
 };
 
-var filterByTime = function(array, query){
+var filterByTime = function (array, query) {
   var filterObject;
-  // If where is not empty, pull out '{"$gt":1454438415229}}',
-  if(query.where){  
+  if (query.where) {
     filterObject = JSON.parse(query.where).createdAt;
     var limit = Number.parseInt(query.limit);
     var direction = null;
     var timeStamp = null;
-    
-    // Get direction and timeStamp from filterObject
-    for(var key in filterObject){
+
+    for (var key in filterObject) {
       direction = key;
       timeStamp = filterObject[key];
     }
-    
+
     // filter messages by direction
     var timeIndex = binarySearch(array, timeStamp);
-    
-    if(direction === '$gt') {
+
+    if (direction === '$gt') {
       return array.slice(timeIndex+1, timeIndex + limit + 1);
-    }else{
-      console.log(timeIndex - limit);
-      console.log('limit: ' + limit + typeof limit);
+    } else {
       return array.slice((timeIndex - limit), timeIndex);
     }
   } else {
@@ -123,7 +114,7 @@ var binarySearch = function (array, target, start, end) {
   } else {
     return binarySearch(array, target, index + 1, end);
   }
-}
+};
 
 var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
